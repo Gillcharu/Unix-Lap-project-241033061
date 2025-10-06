@@ -22,9 +22,6 @@ chmod +x alarm_clock.sh
 2. Run the script:
 bash./alarm_clock.sh
 
-Enter alarm time when prompted (e.g., 07:00 or 14:30)
-Wait for the alarm or press Ctrl+C to cancel
-
 3. Enter alarm time when prompted (e.g., 07:00 or 14:30)
 4. Wait for the alarm or press Ctrl+C to cancel
 
