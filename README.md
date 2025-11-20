@@ -56,5 +56,4 @@ Charu
 5. Displays colorful "WAKE UP!" message with system beeps
 
 
-
-<img width="740" height="407" alt="Screenshot 2025-10-31 at 1 38 13 PM" src="https://github.com/user-attachments/assets/3ab20703-4757-4353-bea9-a86bb516de70" />
+<img width="469" height="607" alt="Screenshot 2025-11-20 at 10 03 48 PM" src="https://github.com/user-attachments/assets/c8524daa-ee08-4cdf-b5af-1d295801b9c3" />
