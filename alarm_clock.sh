@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# =======================
-#   COLORS
-# =======================
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -15,18 +12,12 @@ NC='\033[0m'
 SNOOZE_MINUTES=5
 LOG_FILE="alarm_log.txt"
 
-# =======================
-#   CLEAN EXIT
-# =======================
 cleanup() {
     echo -e "\n${RED}Alarm canceled. Goodbye!${NC}"
     exit 0
 }
 trap cleanup SIGINT
 
-# =======================
-#   BASIC FUNCTIONS
-# =======================
 display_time() {
     echo -e "${BLUE}Current time: $(date '+%H:%M:%S')${NC}"
 }
@@ -52,32 +43,29 @@ play_sound() {
     fi
 }
 
-# =======================
-#  TIME DIFFERENCE
-# =======================
 time_diff() {
     local target_h="$1"
     local target_m="$2"
 
-    local curr_h=$(date '+%H')
-    local curr_m=$(date '+%M')
+    curr_h=$(date '+%H')
+    curr_m=$(date '+%M')
 
     curr_h=$((10#$curr_h))
     curr_m=$((10#$curr_m))
     target_h=$((10#$target_h))
     target_m=$((10#$target_m))
 
-    local now=$((curr_h * 60 + curr_m))
-    local target=$((target_h * 60 + target_m))
+    now=$((curr_h * 60 + curr_m))
+    target=$((target_h * 60 + target_m))
 
-    (( target < now )) && target=$((target + 1440))
+    ((target < now)) && target=$((target + 1440))
 
-    local diff=$((target - now))
+    diff=$((target - now))
     printf "%02dh %02dm" $((diff/60)) $((diff%60))
 }
 
 log_alarm() {
-    echo "$(date '+%Y-%m-%d %H:%M:%S') | Alarm set for $1 | Label: ${3:-None} | Msg: ${2:-None}" >> "$LOG_FILE"
+    echo "$(date '+%Y-%m-%d %H:%M:%S') | Alarm set for $1 | Label: ${3:-None} | Msg: ${2:-None}" >>"$LOG_FILE"
 }
 
 add_snooze() {
@@ -87,7 +75,7 @@ add_snooze() {
 
     m=$((m + snooze))
     if (( m >= 60 )); then
-        h=$((h + m / 60))
+        h=$((h + m/60))
         m=$((m % 60))
     fi
     (( h >= 24 )) && h=$((h % 24))
@@ -95,9 +83,6 @@ add_snooze() {
     printf "%02d:%02d" "$h" "$m"
 }
 
-# =======================
-#   ALARM RINGING
-# =======================
 ring_alarm() {
     local time="$1"
     local msg="$2"
@@ -106,7 +91,6 @@ ring_alarm() {
     clear
     echo -e "\n${RED}${BOLD}========== WAKE UP! ==========${NC}"
     echo -e "${GREEN}Alarm time reached: $(date '+%H:%M:%S')${NC}"
-
     [[ -n "$label" ]] && echo -e "${CYAN}Label: $label${NC}"
     [[ -n "$msg" ]] && echo -e "${YELLOW}Message: $msg${NC}"
 
@@ -118,7 +102,6 @@ ring_alarm() {
     done
 
     echo -e "${YELLOW}Press 's' to snooze (${SNOOZE_MINUTES} min) or any key to dismiss...${NC}"
-
     read -r -n 1 -t 30 key 2>/dev/null
     echo ""
 
@@ -131,16 +114,12 @@ ring_alarm() {
     fi
 }
 
-# =======================
-#   MAIN PROGRAM
-# =======================
 clear
 echo -e "${BOLD}=====================================${NC}"
 echo -e "${BOLD}           ALARM CLOCK${NC}"
 echo -e "${BOLD}=====================================${NC}\n"
 
 display_time
-
 echo ""
 echo -e "${CYAN}Choose alarm mode:${NC}"
 echo "1. Specific time (HH:MM)"
@@ -149,7 +128,6 @@ echo "2. After N minutes"
 read -rp "Choice (1-2): " mode
 
 case "$mode" in
-
 1)
     read -rp "Enter alarm time (HH:MM): " alarm_time
     if ! validate_time "$alarm_time"; then
@@ -157,7 +135,6 @@ case "$mode" in
         exit 1
     fi
     ;;
-
 2)
     read -rp "Enter minutes from now: " mins
     if ! [[ "$mins" =~ ^[0-9]+$ ]]; then
@@ -165,14 +142,12 @@ case "$mode" in
         exit 1
     fi
 
-    # macOS & Linux support
     if date -v+"${mins}M" "+%H:%M" >/dev/null 2>&1; then
         alarm_time=$(date -v+"${mins}M" "+%H:%M")
     else
         alarm_time=$(date -d "+$mins minutes" "+%H:%M")
     fi
     ;;
-
 *)
     echo -e "${RED}Invalid choice.${NC}"
     exit 1
@@ -185,9 +160,8 @@ alarm_min=${alarm_time#*:}
 read -rp "Enter label (optional): " label
 read -rp "Enter custom message (optional): " msg
 
-log_alarm "$alarm_time" "$msg" "$label"
-
 until_time=$(time_diff "$alarm_hour" "$alarm_min")
+log_alarm "$alarm_time" "$msg" "$label"
 
 echo ""
 echo -e "${GREEN}Alarm set for ${BOLD}$alarm_time${NC}"
@@ -195,9 +169,6 @@ echo -e "${GREEN}Alarm set for ${BOLD}$alarm_time${NC}"
 echo -e "${BLUE}Time until alarm: $until_time${NC}"
 echo -e "${YELLOW}Press Ctrl+C to cancel.${NC}\n"
 
-# =======================
-#   MAIN LOOP
-# =======================
 while true; do
     curr_h=$(date '+%H')
     curr_m=$(date '+%M')
@@ -208,7 +179,6 @@ while true; do
 
     if (( curr_h == alarm_hour && curr_m == alarm_min )); then
         ring_alarm "$alarm_time" "$msg" "$label"
-
         if (( $? == 1 )); then
             new_time=$(add_snooze "$alarm_hour" "$alarm_min" "$SNOOZE_MINUTES")
             alarm_hour=${new_time%:*}
@@ -226,4 +196,3 @@ while true; do
 
     sleep 1
 done
-
