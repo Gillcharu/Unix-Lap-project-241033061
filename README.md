@@ -6,12 +6,13 @@ A simple bash alarm clock for Unix/Linux lab project.
 This script allows users to set an alarm for a specific time. When the alarm time is reached, it displays a "WAKE UP!" message with system beeps.
 
 ## Features
-- 24-hour time format (HH:MM)
-- Input validation
-- Real-time clock display
-- Color-coded terminal output
-- System beep alerts
-- Simple and easy to use
+- Supports 24 hour time format (HH:MM)
+- Input validation for correct time format
+- Real time clock display
+- Color coded terminal output
+- System beep / alarm sound
+- User-friendly and easy to use
+- Graceful exit with Ctrl + C
 
 ## Usage
 
@@ -30,6 +31,8 @@ bash./alarm_clock.sh
 
 1. Unix/Linux operating system
 2. Bash shell
+3. Optional: afplay (macOS) or paplay (Linux) for audio playback
+(Script automatically falls back to terminal beep)
 
 
 ## Lab Project
