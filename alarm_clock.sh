@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# =======================
+#   COLORS
+# =======================
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
@@ -12,12 +15,18 @@ NC='\033[0m'
 SNOOZE_MINUTES=5
 LOG_FILE="alarm_log.txt"
 
+# =======================
+#   CLEAN EXIT
+# =======================
 cleanup() {
     echo -e "\n${RED}Alarm canceled. Goodbye!${NC}"
     exit 0
 }
 trap cleanup SIGINT
 
+# =======================
+#   BASIC FUNCTIONS
+# =======================
 display_time() {
     echo -e "${BLUE}Current time: $(date '+%H:%M:%S')${NC}"
 }
@@ -43,14 +52,15 @@ play_sound() {
     fi
 }
 
-# Works on both macOS & Linux
+# =======================
+#  TIME DIFFERENCE
+# =======================
 time_diff() {
     local target_h="$1"
     local target_m="$2"
 
-    local curr_h curr_m
-    curr_h=$(date '+%H')
-    curr_m=$(date '+%M')
+    local curr_h=$(date '+%H')
+    local curr_m=$(date '+%M')
 
     curr_h=$((10#$curr_h))
     curr_m=$((10#$curr_m))
@@ -60,7 +70,7 @@ time_diff() {
     local now=$((curr_h * 60 + curr_m))
     local target=$((target_h * 60 + target_m))
 
-    ((target < now)) && target=$((target + 1440))
+    (( target < now )) && target=$((target + 1440))
 
     local diff=$((target - now))
     printf "%02dh %02dm" $((diff/60)) $((diff%60))
@@ -78,13 +88,16 @@ add_snooze() {
     m=$((m + snooze))
     if (( m >= 60 )); then
         h=$((h + m / 60))
-        m=$(( m % 60 ))
+        m=$((m % 60))
     fi
     (( h >= 24 )) && h=$((h % 24))
 
     printf "%02d:%02d" "$h" "$m"
 }
 
+# =======================
+#   ALARM RINGING
+# =======================
 ring_alarm() {
     local time="$1"
     local msg="$2"
@@ -118,15 +131,16 @@ ring_alarm() {
     fi
 }
 
-# ===============================
-#         MAIN PROGRAM
-# ===============================
+# =======================
+#   MAIN PROGRAM
+# =======================
 clear
 echo -e "${BOLD}=====================================${NC}"
 echo -e "${BOLD}           ALARM CLOCK${NC}"
 echo -e "${BOLD}=====================================${NC}\n"
 
 display_time
+
 echo ""
 echo -e "${CYAN}Choose alarm mode:${NC}"
 echo "1. Specific time (HH:MM)"
@@ -135,6 +149,7 @@ echo "2. After N minutes"
 read -rp "Choice (1-2): " mode
 
 case "$mode" in
+
 1)
     read -rp "Enter alarm time (HH:MM): " alarm_time
     if ! validate_time "$alarm_time"; then
@@ -150,7 +165,7 @@ case "$mode" in
         exit 1
     fi
 
-    # macOS compatible time calculation
+    # macOS & Linux support
     if date -v+"${mins}M" "+%H:%M" >/dev/null 2>&1; then
         alarm_time=$(date -v+"${mins}M" "+%H:%M")
     else
@@ -180,7 +195,9 @@ echo -e "${GREEN}Alarm set for ${BOLD}$alarm_time${NC}"
 echo -e "${BLUE}Time until alarm: $until_time${NC}"
 echo -e "${YELLOW}Press Ctrl+C to cancel.${NC}\n"
 
-# MAIN LOOP
+# =======================
+#   MAIN LOOP
+# =======================
 while true; do
     curr_h=$(date '+%H')
     curr_m=$(date '+%M')
