@@ -55,5 +55,4 @@ Charu
 4. When current time matches alarm time, triggers alert
 5. Displays colorful "WAKE UP!" message with system beeps
 
-
-<img width="469" height="607" alt="Screenshot 2025-11-20 at 10 03 48 PM" src="https://github.com/user-attachments/assets/c8524daa-ee08-4cdf-b5af-1d295801b9c3" />
+<img width="469" height="607" alt="Screenshot 2025-11-20 at 10 03 48 PM" src="https://github.com/user-attachments/assets/d743bd2e-c2fd-457e-b2f7-15cfa58bc8b7" />
